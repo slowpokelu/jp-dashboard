@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>日本語 Progress</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --pink:#ff66a5;--purple:#aa00ff;--blue:#60a5fa;
+  --bg:#f4f6fa;--card:#ffffff;--text:#1f2937;--track:#e5e7eb;
+  --bg-dark:#0f172a;--card-dark:#1e293b;--text-dark:#f8fafc;--track-dark:#334155;
+}
+[data-theme="dark"]{
+  --bg:var(--bg-dark);--card:var(--card-dark);--text:var(--text-dark);--track:var(--track-dark);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;align-items:center;gap:2rem;padding:2rem 1rem;min-height:100vh;transition:background .3s,color .3s;}
+header{position:relative;max-width:760px;width:100%;display:flex;justify-content:center;align-items:center;}
+h1{font-size:2.1rem;font-weight:700;letter-spacing:-.6px;}
+.toggle-btn{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:44px;border:none;border-radius:50%;background:var(--track);color:var(--text);font-size:1.25rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .25s;}
+.toggle-btn:hover{transform:translateY(-50%) rotate(20deg);}  
+.grid{width:100%;max-width:760px;display:grid;gap:1.75rem;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));justify-items:center;}
+.card{background:var(--card);border-radius:18px;padding:2rem 1.7rem 2.2rem;box-shadow:0 10px 22px -10px rgba(0,0,0,.15);display:flex;flex-direction:column;align-items:center;gap:1.35rem;width:100%;max-width:340px;transition:background .3s,box-shadow .3s;}
+.card.full{max-width:none;}
+.card h2{font-size:1.25rem;font-weight:600;text-align:center;}
+.level{font-size:.9rem;font-weight:600;opacity:.8;margin-top:-.55rem;letter-spacing:.3px;}
+.progress-track{width:100%;height:24px;background:var(--track);border-radius:12px;overflow:hidden;}
+.fill{height:100%;width:0;transition:width .6s ease;}
+.wk-fill{background:linear-gradient(90deg,var(--pink),var(--purple));}
+.counts{display:flex;justify-content:space-between;width:100%;font-weight:700;font-size:1.05rem;}
+.counts span{display:flex;flex-direction:column;align-items:center;width:49%;}
+small{font-size:.72rem;opacity:.78;margin-top:.12rem;}
+.kanji{color:var(--pink);} .vocab{color:var(--purple);} 
+.bp-list{width:100%;display:flex;flex-direction:column;gap:.45rem;margin:.4rem 0;}
+.bp-row{display:flex;align-items:center;gap:.55rem;}
+.bp-label{width:34px;font-weight:600;text-align:right;}
+.bp-track{flex:1;height:12px;background:var(--track);border-radius:6px;overflow:hidden;}
+.bp-fill{background:var(--blue);height:100%;width:0;}
+.bp-count{width:74px;text-align:right;font-size:.8rem;font-variant-numeric:tabular-nums;opacity:.92;}
+.percent-box{text-align:center;line-height:1;}
+.percent-num{font-size:2rem;font-weight:800;}
+.percent-label{font-size:.78rem;opacity:.75;letter-spacing:.4px;margin-top:.15rem;}
+.note{font-size:.75rem;opacity:.75;margin-top:.3rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>日本語 Progress</h1>
+  <button class="toggle-btn" id="themeBtn"><span id="icon">🌙</span></button>
+</header>
+
+<section class="grid">
+  <!-- WaniKani Card stretched -->
+  <div class="card full" style="grid-column:1 / -1;">
+    <h2>WaniKani</h2>
+    <div class="level" id="wkLevel">Lv 29</div>
+    <div class="progress-track"><div class="fill wk-fill" id="wkBar"></div></div>
+    <div class="counts">
+      <span class="kanji">1003<small>漢字</small></span>
+      <span class="vocab">3320<small>単語</small></span>
+    </div>
+    <div class="percent-box"><div class="percent-num" id="wkPct">--%</div><div class="percent-label">complete</div></div>
+    <div class="note">ひらがな・カタカナ ✅</div>
+  </div>
+
+  <!-- Bunpro Card -->
+  <div class="card full" style="grid-column:1 / -1;">
+    <h2>Bunpro JLPT</h2>
+    <div class="bp-list" id="bpRows"></div>
+    <div class="percent-box"><div class="percent-num" id="bpPct">--%</div><div class="percent-label">grammar complete</div></div>
+  </div>
+
+  <!-- Overall Card -->
+  <div class="card full" style="grid-column:1 / -1;">
+    <h2>Overall</h2>
+    <div class="percent-box" style="margin-top:.3rem;"><div class="percent-num" id="totalPct" style="font-size:2.4rem;">--%</div><div class="percent-label">of all tracked content</div></div>
+  </div>
+</section>
+
+<script>
+const LEVEL=29;
+const KANJI=1003;const VOCAB=3320;
+const TK=2074;const TV=6553;
+const bunpro=[{l:'N5',d:126,t:126},{l:'N4',d:107,t:177},{l:'N3',d:22,t:219},{l:'N2',d:2,t:213},{l:'N1',d:2,t:180}];
+// WK
+wkBar.style.width=((LEVEL/60)*100).toFixed(2)+'%';
+wkPct.textContent=(((KANJI+VOCAB)/(TK+TV))*100).toFixed(1)+'%';
+// Bunpro list
+let bpDone=0,bpTotal=0;
+bunpro.forEach(({l,d,t})=>{bpDone+=d;bpTotal+=t;const pct=(d/t)*100;const row=document.createElement('div');row.className='bp-row';row.innerHTML=`<span class='bp-label'>${l}</span><div class='bp-track'><div class='bp-fill' style='width:${pct}%'></div></div><span class='bp-count'>${d}/${t}</span>`;bpRows.appendChild(row);});
+document.getElementById('bpPct').textContent=((bpDone/bpTotal)*100).toFixed(1)+'%';
+// Overall
+const totalPct=((KANJI+VOCAB+bpDone)/(TK+TV+bpTotal))*100;
+document.getElementById('totalPct').textContent=totalPct.toFixed(1)+'%';
+// theme toggle
+const root=document.documentElement,icon=document.getElementById('icon');
+if(localStorage.getItem('theme')==='dark'){root.dataset.theme='dark';icon.textContent='☀️';}
+document.getElementById('themeBtn').onclick=()=>{const dark=root.dataset.theme==='dark';if(dark){delete root.dataset.theme;localStorage.setItem('theme','light');icon.textContent='🌙';}else{root.dataset.theme='dark';localStorage.setItem('theme','dark');icon.textContent='☀️';}};
+</script>
+</body>
+</html>
