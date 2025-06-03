@@ -53,14 +53,14 @@ small{font-size:.72rem;opacity:.78;margin-top:.12rem;}
   <!-- WaniKani Card stretched -->
   <div class="card full" style="grid-column:1 / -1;">
     <h2>WaniKani</h2>
-    <div class="level" id="wkLevel">Lv 29</div>
+    <div class="level" id="wkLevel">Lv 33</div>
     <div class="progress-track"><div class="fill wk-fill" id="wkBar"></div></div>
     <div class="counts">
-      <span class="kanji">1003<small>漢字</small></span>
-      <span class="vocab">3320<small>単語</small></span>
+      <span class="kanji">1103<small>漢字</small></span>
+      <span class="vocab">3584<small>単語</small></span>
     </div>
     <div class="percent-box"><div class="percent-num" id="wkPct">--%</div><div class="percent-label">complete</div></div>
-    <div class="note">ひらがな・カタカナ ✅</div>
+    <div class="note">ひらがな・カタカナ 100% ✅</div>
   </div>
 
   <!-- Bunpro Card -->
@@ -78,10 +78,10 @@ small{font-size:.72rem;opacity:.78;margin-top:.12rem;}
 </section>
 
 <script>
-const LEVEL=29;
-const KANJI=1003;const VOCAB=3320;
+const LEVEL=33;
+const KANJI=1103;const VOCAB=3584;
 const TK=2074;const TV=6553;
-const bunpro=[{l:'N5',d:126,t:126},{l:'N4',d:107,t:177},{l:'N3',d:22,t:219},{l:'N2',d:2,t:213},{l:'N1',d:2,t:180}];
+const bunpro=[{l:'N5',d:126,t:126},{l:'N4',d:177,t:177},{l:'N3',d:49,t:219},{l:'N2',d:5,t:213},{l:'N1',d:2,t:180}];
 // WK
 wkBar.style.width=((LEVEL/60)*100).toFixed(2)+'%';
 wkPct.textContent=(((KANJI+VOCAB)/(TK+TV))*100).toFixed(1)+'%';
